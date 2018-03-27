@@ -14,10 +14,7 @@ Se dispone de 4 modos:
 
 Ejemplos de Modo BEACOM
 
-
-
 Ejemplo de Modo MANUAL
-
 
 
 Luciano Lagassa <info@lucianolagassa.com.ar>
