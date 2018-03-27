@@ -7,14 +7,14 @@ la idea es que pueda ser ejecutado en casi cualquier dispositivo que tenga este 
 aun esta en desarrollo por lo que varias funciones no estan completamente finalizadas.
 
 Se dispone de 4 modos:
-  BEACON: modo baliza, sin datos desde linea de comandos, solo lee los datos desde el archivo aprsbc.conf, actualización infinita.
-          modo baliza, toma los datos desde linea de comandos y solo lee los datos de login desde el archivo aprsbc.conf, solo se ejecuta una conección.
-  MANUAL: modo manual, toma los datos desde linea de comandos y solo lee los datos de login desde el archivo aprsbc.conf, actualización infinita.
-  IGATE:  modo serial, toma los datos desde modem tnc y solo lee los datos de login desde el archivo aprsbc.conf, actualización infinita.
+  **BEACON**: *modo baliza, sin datos desde linea de comandos, solo lee los datos desde el archivo aprsbc.conf, actualización infinita.*
+          *modo baliza, toma los datos desde linea de comandos y solo lee los datos de login desde el archivo aprsbc.conf, solo se ejecuta una conección.*
+  **MANUAL**: *modo manual, toma los datos desde linea de comandos y solo lee los datos de login desde el archivo aprsbc.conf, actualización infinita.*
+  **IGATE**:  *modo serial, toma los datos desde modem tnc y solo lee los datos de login desde el archivo aprsbc.conf, actualización infinita.*
 
-Ejemplo Ejecucción Modo BEACON (Sin datos desde Linea de Comando)
+Ejemplo Ejecucción Modo **BEACON** (Sin datos desde Linea de Comando)
 aprsbc
-
+`
 ----------------------------------------
                  APRSBC
            v0.18.03.27-1050
@@ -40,11 +40,11 @@ Config:
 ----------------------------------------
 Connecting to APRS Server (T2EISBERG) [OK]
 Waiting 30 Seconds
+`
 
-
-Ejemplo Ejecucción Modo BEACON (Desde Linea de Comando)
+Ejemplo Ejecucción Modo **BEACON** (Desde Linea de Comando)
 aprsbc
-
+`
 ----------------------------------------
                  APRSBC
            v0.18.03.27-1050
@@ -69,3 +69,4 @@ Config:
   Port: 14580
 ----------------------------------------
 Connecting to APRS Server (T2MAZURY) [OK]
+`
