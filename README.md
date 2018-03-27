@@ -14,14 +14,16 @@ Se dispone de 4 modos:
 
 Ejemplos de Modo BEACOM
 
-::
-  Test1
-  
-::
-  Tes2
+
+
+Ejemplo de Modo MANUAL
+
 
 
 Luciano Lagassa <info@lucianolagassa.com.ar>
+
 https://www.lucianolagassa.com.ar/
+
 Copyright 2018 Luciano Lagassa and Contributors
+
 `Automatic Packet Reporting System (APRS) <http://www.aprs.org/>` is Copyright Bob Bruninga WB4APR wb4apr@amsat.org
