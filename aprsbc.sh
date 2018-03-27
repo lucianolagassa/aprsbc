@@ -3,7 +3,7 @@
 # LU3FLA - Luciano Javier Lagassa - info@lucianolagassa.com.ar - www.lucianolagassa.com.ar
 #
 # AppVersion
-AppVer="0.18.03.08-1848"
+AppVer="0.18.03.27-1050"
 #
 # About
 About()
@@ -25,10 +25,10 @@ About()
 CmdError()
 {
  echo "Command Line Error"
- echo "aprsb AppMode[BEACOM o IGATE o MANUAL]"
- echo "aprsb AppMode[BEACOM o IGATE o MANUAL] MyCall MyLat MyLong"
- echo "aprsb AppMode[BEACOM o IGATE o MANUAL] MyCall MyLat MyLong MyText"
- echo "aprsb AppMode[BEACOM o IGATE o MANUAL] MyCall MyLat MyLong MyText UpdDelay"
+ echo "aprsb AppMode[BEACON o IGATE o MANUAL]"
+ echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong"
+ echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText"
+ echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText UpdDelay"
  echo "----------------------------------------"
  exit 3
 }
@@ -79,14 +79,13 @@ LoadConfig()
 # Load CommandLine Arguments
 LoadCommands()
 {
- echo "Cmd: $#"
  if [ $# -gt 0 ]
  then
   case $# in
    1)
     case $1 in
-     'BEACOM')
-      AppMode="BEACOM"
+     'BEACON')
+      AppMode="BEACON"
       CmdCall=$MyCall
       CmdLat=$MyLat
       CmdLong=$MyLong
@@ -107,7 +106,7 @@ LoadCommands()
       CmdText=$MyText
      ;;
      'DEBUG')
-      AppMode="BEACOM"
+      AppMode="BEACON"
       AppDebug="OK"
       CmdCall=$MyCall
       CmdLat=$MyLat
@@ -121,8 +120,8 @@ LoadCommands()
    ;;
    4)
     case $1 in
-     'BEACOM')
-      AppMode="BEACOM"
+     'BEACON')
+      AppMode="BEACON"
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
@@ -150,7 +149,7 @@ LoadCommands()
    5)
     AppMode=$1
     case $1 in
-     'BEACOM')
+     'BEACON')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
@@ -177,7 +176,7 @@ LoadCommands()
     AppMode=$1
     UpdDelay=$6
     case $1 in
-     'BEACOM')
+     'BEACON')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
@@ -210,7 +209,7 @@ LoadCommands()
      AppDebug="NO"
     fi
     case $1 in
-     'BEACOM')
+     'BEACON')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
@@ -238,7 +237,7 @@ LoadCommands()
    ;;
   esac
  else
-  AppMode="BEACOM"
+  AppMode="BEACON"
  fi
 }
 #
@@ -260,7 +259,7 @@ ShowInfo()
   echo " CmdText: $CmdText"
  else
   case $AppMode in
-   'BEACOM')
+   'BEACON')
     echo " MyCall: $MyCall"
     echo " MyLat: $MyLat"
     echo " MyLog: $MyLong"
@@ -292,7 +291,7 @@ ShowInfo()
  echo "  Host: $ServerHost"
  echo "  Port: $ServerPort"
  case $AppMode in
-  'BEACOM')
+  'BEACON')
    # Para Futuros Usos
   ;;
   'MANUAL')
@@ -315,8 +314,19 @@ NetClient()
  do
   # Detecta el Modo
   case $AppMode in
-   'BEACOM') # Envia Datos de CFG a Servidor APRS
-    TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$MyCall>APRS,TCPIP*:=$MyLat/$MyLong&$MyText {APRSBC}" | nc $ServerHost $ServerPort 2> /dev/null`
+   'BEACON')
+    if [ ! "$CmdCall" ]
+    then
+    {
+     # Envia Datos de CFG a Servidor APRS
+     TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$MyCall>APRS,TCPIP*:=$MyLat/$MyLong&$MyText {APRSBC}" | nc $ServerHost $ServerPort 2> /dev/null`
+    }
+    else
+    {
+     # Envia Datos de CMD a Servidor APRS
+     TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong#$CmdText {APRSBC}" | nc $ServerHost $ServerPort 2> /dev/null`
+    }
+    fi
    ;;
    'MANUAL') # Envia Datos de CMD a Servidor APRS
     TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong#$CmdText {APRSBC}" | nc $ServerHost $ServerPort 2> /dev/null`
@@ -352,9 +362,19 @@ NetClient()
   fi
   # Detecta el Modo
   case $AppMode in
-   'BEACOM') # Activa el UpdDelay
-    echo "Waiting $UpdDelay Seconds"
-    sleep $UpdDelay
+   'BEACON') # Activa el UpdDelay
+    if [ ! "$CmdCall" ]
+    then
+    {
+     echo "Waiting $UpdDelay Seconds"
+     sleep $UpdDelay
+    }
+    else
+    {
+     sleep 1
+     break
+    }
+    fi
    ;;
    'MANUAL') # Activa el UpdDelay
     echo "Waiting $UpdDelay Seconds"
@@ -438,7 +458,7 @@ LoadConfig
 LoadCommands $@
 ShowInfo
 case $AppMode in
- 'BEACOM')
+ 'BEACON')
   NetClient
  ;;
  'MANUAL')
@@ -449,4 +469,3 @@ case $AppMode in
  ;;
 esac
 #
-
