@@ -2,7 +2,7 @@
 APRS Bash Client for Linux
 **************************
 
-Este Software es Mayormente un Script Bash que Utiliza Herramienta disponibles en Linux
+Este Software es Mayormente un Script Bash que Utiliza Herramientas disponibles en Linux
 la idea es que pueda ser ejecutado en casi cualquier dispositivo que tenga este sistema operativo.
 
 aun está en desarrollo por lo que varias funciones no están completamente finalizadas.
