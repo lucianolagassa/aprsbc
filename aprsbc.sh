@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 # APRSBC - APRS Bash Client for Linux
 # LU3FLA - Luciano Javier Lagassa - info@lucianolagassa.com.ar - www.lucianolagassa.com.ar
 #
 # AppVersion
-AppVer="0.18.03.27-1050"
+AppVer="0.18.12.17-1120"
 #
 # About
 About()
@@ -25,10 +25,11 @@ About()
 CmdError()
 {
  echo "Command Line Error"
- echo "aprsb AppMode[BEACON o IGATE o MANUAL]"
+ echo "aprsb AppMode[IGATE]"
  echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong"
  echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText"
  echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText UpdDelay"
+ echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText UpdDelay DEBUG"
  echo "----------------------------------------"
  exit 3
 }
@@ -90,6 +91,7 @@ LoadCommands()
       CmdLat=$MyLat
       CmdLong=$MyLong
       CmdText=$MyText
+      UpdDelay="0"
      ;;
      'MANUAL')
       AppMode="MANUAL"
@@ -97,6 +99,7 @@ LoadCommands()
       CmdLat=$MyLat
       CmdLong=$MyLong
       CmdText=$MyText
+      UpdDelay="30"
      ;;
      'IGATE')
       AppMode="IGATE"
@@ -104,6 +107,7 @@ LoadCommands()
       CmdLat=$MyLat
       CmdLong=$MyLong
       CmdText=$MyText
+      UpdDelay="30"
      ;;
      'DEBUG')
       AppMode="BEACON"
@@ -112,6 +116,7 @@ LoadCommands()
       CmdLat=$MyLat
       CmdLong=$MyLong
       CmdText=$MyText
+      UpdDelay="0"
      ;;
      *)
       CmdError
@@ -126,6 +131,7 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText="Testing APRS Bash Client for Linux"
+      UpdDelay="0"
      ;;
      'MANUAL')
       AppMode="MANUAL"
@@ -133,6 +139,7 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText="Testing APRS Bash Client for Linux"
+      UpdDelay="30"
      ;;
      'IGATE')
       AppMode="IGATE"
@@ -140,6 +147,7 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText="Testing APRS Bash Client for Linux"
+      UpdDelay="30"
      ;;
      *)
       CmdError
@@ -154,18 +162,21 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay="0"
      ;;
      'MANUAL')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay="30"
      ;;
      'IGATE')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay="30"
      ;;
      *)
       CmdError
@@ -174,25 +185,27 @@ LoadCommands()
    ;;
    6)
     AppMode=$1
-    UpdDelay=$6
     case $1 in
      'BEACON')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay="0"
      ;;
      'MANUAL')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay=$6
      ;;
      'IGATE')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay=$6
      ;;
      *)
       CmdError
@@ -201,7 +214,6 @@ LoadCommands()
    ;;
    7)
     AppMode=$1
-    UpdDelay=$6
     if [ "$7" = "DEBUG" ]
     then
      AppDebug="OK"
@@ -214,18 +226,21 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay="0"
      ;;
      'MANUAL')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay=$6
      ;;
      'IGATE')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      UpdDelay=$6
      ;;
      *)
       CmdError
