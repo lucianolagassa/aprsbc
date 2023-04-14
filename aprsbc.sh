@@ -27,13 +27,13 @@ About()
 CmdError()
 {
  echo "Command Line Error"
- echo "aprsb AppMode[BEACON o GPS o IGATE o MANUAL]"
- echo "aprsb AppMode[BEACON o GPS o IGATE o MANUAL] MyCall"
- echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong"
- echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText"
- echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon"
- echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon UpdDelay"
- echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon UpdDelay DEBUG"
+ echo "aprsbc AppMode[BEACON o GPS o IGATE o MANUAL]"
+ echo "aprsbc AppMode[BEACON o GPS o IGATE o MANUAL] MyCall"
+ echo "aprsbc AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong"
+ echo "aprsbc AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText"
+ echo "aprsbc AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon"
+ echo "aprsbc AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon UpdDelay"
+ echo "aprsbc AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon UpdDelay DEBUG"
  echo "----------------------------------------"
  exit 3
 }
@@ -99,12 +99,16 @@ LoadCommands()
       CmdLong=$MyLong
       CmdText=$MyText
       CmdIcon=$MyIcon
+      #UpdDelay="60"
      ;;
      'GPS')
       AppMode="GPS"
       CmdCall=$MyCall
+      #CmdLat=$MyLat
+      #CmdLong=$MyLong
       CmdText=$MyText
       CmdIcon=$MyIcon
+      #UpdDelay="60"
      ;;
      'MANUAL')
       AppMode="MANUAL"
@@ -113,6 +117,7 @@ LoadCommands()
       CmdLong=$MyLong
       CmdText=$MyText
       CmdIcon=$MyIcon
+      #UpdDelay="60"
      ;;
      'IGATE')
       AppMode="IGATE"
@@ -121,6 +126,7 @@ LoadCommands()
       CmdLong=$MyLong
       CmdText=$MyText
       CmdIcon=$MyIcon
+      #UpdDelay="30"
      ;;
      'DEBUG')
       AppMode="BEACON"
@@ -130,6 +136,7 @@ LoadCommands()
       CmdLong=$MyLong
       CmdText=$MyText
       CmdIcon=$MyIcon
+      #UpdDelay="0"
      ;;
      *)
       CmdError
@@ -368,6 +375,7 @@ LoadCommands()
   CmdLong=$MyLong
   CmdText=$MyText
   CmdIcon=$MyIcon
+  #UpdDelay="60"
  fi
 }
 #
@@ -452,22 +460,27 @@ NetClient()
    {
     # Envia Datos de CFG a Servidor APRS
     TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$MyCall>APRS,TCPIP*:=$MyLat/$MyLong$MyIcon$MyText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+    #TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$MyCall>APRS,TCPIP*:=$MyLat/$MyLong&$MyText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
    }
    else
    {
     # Envia Datos de CMD a Servidor APRS
     TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong$CmdIcon$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+    #TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong&$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
    }
    fi
   ;;
   'GPS') # Envia Datos de GPS a Servidor APRS
    TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong$CmdIcon$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+   #TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong&$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
   ;;
   'IGATE') # Envia Datos de Modem a Servidor APRS
    TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$SerialCall>APRS,TCPIP*:=$SerialLat/$SerialLong$CmdIcon$SerialText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+   #TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$SerialCall>APRS,TCPIP*:=$SerialLat/$SerialLong#$SerialText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
   ;;
   'MANUAL') # Envia Datos de CMD a Servidor APRS
    TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong$CmdIcon$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+   #TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong#$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
   ;;
  esac
  if [ "$AppDebug" = "OK" ]
@@ -600,10 +613,13 @@ ModemRead()
   then
    echo " [OK]"
    echo -n 'Reading Data from Serial Modem'
+   #SerialData=`head -n 1 $SerialPort` # Lectura con Head
+   #SerialData=`dd if=$SerialPort count=22 status=none` # Lectura con DD
    while read -r SerialData < $SerialPort
    do
     if [ -n "$SerialData" ]
     then
+     #echo " [OK]"
      if [ "$AppDebug" = "OK" ]
      then
       echo "Data Read"
@@ -615,6 +631,11 @@ ModemRead()
      SerialLat="$CmdLat"
      SerialLong="$CmdLong"
      SerialText="$SerialData"
+     #echo " MyCall: $SerialCall"
+     #echo " MyLat: $SerialLat"
+     #echo " MyLog: $SerialLong"
+     #echo " MyText: $SerialText"
+     #echo "Sending Data to Server"
     else
      echo " [Error]"
     fi
