@@ -8,9 +8,10 @@ la idea es que pueda ser ejecutado en casi cualquier dispositivo que tenga este 
 aun está en desarrollo por lo que varias funciones no están completamente finalizadas.
 
 Se dispone de 4 modos:
- - **BEACON**: *modo baliza, sin datos desde linea de comandos, solo lee los datos desde el archivo aprsbc.conf, actualización infinita.* *modo baliza, toma los datos desde linea de comandos y solo lee los datos de login desde el archivo aprsbc.conf, solo se ejecuta una conexión.*
+ - **BEACON**: *modo baliza, con o sin datos desde linea de comandos, por lo que puede lee los datos desde el archivo aprsbc.conf o desde linea de comandos, actualización infinita.*
+ - **GPS**: *modo gps, con o sin datos desde linea de comandos, por lo que puede lee los datos desde el archivo aprsbc.conf, desde linea de comandos y la ubicación desde gps serial, actualización infinita.*
+ - **IGATE**:  *modo serial, con o sin datos desde linea de comandos, por lo que puede lee los datos desde el archivo aprsbc.conf, desde linea de comandos y toma los datos desde modem tnc, actualización infinita.*
  - **MANUAL**: *modo manual, toma los datos desde linea de comandos y solo lee los datos de login desde el archivo aprsbc.conf, actualización infinita.*
- - **IGATE**:  *modo serial, toma los datos desde modem tnc y solo lee los datos de login desde el archivo aprsbc.conf, actualización infinita.*
 
 Ejemplos de Modo BEACOM
 

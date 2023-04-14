@@ -3,8 +3,9 @@
 # LU3FLA - Luciano Javier Lagassa - info@lucianolagassa.com.ar - www.lucianolagassa.com.ar
 #
 # AppVersion
-AppVer="0.18.12.17-1120"
+AppVer="0.23.04.13-23.47"
 #
+
 # About
 About()
 {
@@ -21,19 +22,23 @@ About()
  echo "----------------------------------------" 
 }
 #
+
 # Command Line Error
 CmdError()
 {
  echo "Command Line Error"
- echo "aprsb AppMode[IGATE]"
+ echo "aprsb AppMode[BEACON o GPS o IGATE o MANUAL]"
+ echo "aprsb AppMode[BEACON o GPS o IGATE o MANUAL] MyCall"
  echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong"
  echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText"
- echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText UpdDelay"
- echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText UpdDelay DEBUG"
+ echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon"
+ echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon UpdDelay"
+ echo "aprsb AppMode[BEACON o IGATE o MANUAL] MyCall MyLat MyLong MyText MyIcon UpdDelay DEBUG"
  echo "----------------------------------------"
  exit 3
 }
 #
+
 # Load Config File
 LoadConfig()
 {
@@ -67,9 +72,10 @@ LoadConfig()
    echo 'MyLat="0"' >> aprsbc.conf
    echo 'MyLong="0"' >> aprsbc.conf
    echo 'MyText="Testing APRS Bash Client for Linux"' >> aprsbc.conf
+   echo 'MyIcon="&"' >> aprsbc.conf
    echo 'ServerHost="rotate.aprs2.net"' >> aprsbc.conf
    echo 'ServerPort="14580"' >> aprsbc.conf
-   echo 'UpdDelay=30' >> aprsbc.conf
+   echo 'UpdDelay=60' >> aprsbc.conf
    echo '#' >> aprsbc.conf
    echo "Edit the Configuration File, it is located at /etc/aprsbc.conf"
    exit 1
@@ -77,6 +83,7 @@ LoadConfig()
  fi
 }
 #
+
 # Load CommandLine Arguments
 LoadCommands()
 {
@@ -91,7 +98,13 @@ LoadCommands()
       CmdLat=$MyLat
       CmdLong=$MyLong
       CmdText=$MyText
-      UpdDelay="0"
+      CmdIcon=$MyIcon
+     ;;
+     'GPS')
+      AppMode="GPS"
+      CmdCall=$MyCall
+      CmdText=$MyText
+      CmdIcon=$MyIcon
      ;;
      'MANUAL')
       AppMode="MANUAL"
@@ -99,7 +112,7 @@ LoadCommands()
       CmdLat=$MyLat
       CmdLong=$MyLong
       CmdText=$MyText
-      UpdDelay="30"
+      CmdIcon=$MyIcon
      ;;
      'IGATE')
       AppMode="IGATE"
@@ -107,7 +120,7 @@ LoadCommands()
       CmdLat=$MyLat
       CmdLong=$MyLong
       CmdText=$MyText
-      UpdDelay="30"
+      CmdIcon=$MyIcon
      ;;
      'DEBUG')
       AppMode="BEACON"
@@ -116,6 +129,59 @@ LoadCommands()
       CmdLat=$MyLat
       CmdLong=$MyLong
       CmdText=$MyText
+      CmdIcon=$MyIcon
+     ;;
+     *)
+      CmdError
+     ;;
+    esac
+   ;;
+   2)
+    case $1 in
+     'BEACON')
+      AppMode="BEACON"
+      CmdCall=$2
+      CmdLat=$MyLat
+      CmdLong=$MyLong
+      CmdText=$MyText
+      CmdIcon=$MyIcon
+      UpdDelay="30"
+     ;;
+     'GPS')
+      AppMode="GPS"
+      CmdCall=$2
+      CmdLat=$MyLat
+      CmdLong=$MyLong
+      CmdText=$MyText
+      CmdIcon=$MyIcon
+      UpdDelay="30"
+     ;;
+     'MANUAL')
+      AppMode="MANUAL"
+      CmdCall=$2
+      CmdLat=$MyLat
+      CmdLong=$MyLong
+      CmdText=$MyText
+      CmdIcon=$MyIcon
+      UpdDelay="30"
+     ;;
+     'IGATE')
+      AppMode="IGATE"
+      CmdCall=$2
+      CmdLat=$MyLat
+      CmdLong=$MyLong
+      CmdText=$MyText
+      CmdIcon=$MyIcon
+      UpdDelay="30"
+     ;;
+     'DEBUG')
+      AppMode="BEACON"
+      AppDebug="OK"
+      CmdCall=$2
+      CmdLat=$MyLat
+      CmdLong=$MyLong
+      CmdText=$MyText
+      CmdIcon=$MyIcon
       UpdDelay="0"
      ;;
      *)
@@ -131,7 +197,8 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText="Testing APRS Bash Client for Linux"
-      UpdDelay="0"
+      CmdIcon="&"
+      UpdDelay="30"
      ;;
      'MANUAL')
       AppMode="MANUAL"
@@ -139,6 +206,7 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText="Testing APRS Bash Client for Linux"
+      CmdIcon="&"
       UpdDelay="30"
      ;;
      'IGATE')
@@ -147,6 +215,7 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText="Testing APRS Bash Client for Linux"
+      CmdIcon="&"
       UpdDelay="30"
      ;;
      *)
@@ -162,13 +231,15 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
-      UpdDelay="0"
+      CmdIcon="&"
+      UpdDelay="30"
      ;;
      'MANUAL')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      CmdIcon="&"
       UpdDelay="30"
      ;;
      'IGATE')
@@ -176,6 +247,7 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      CmdIcon="&"
       UpdDelay="30"
      ;;
      *)
@@ -191,21 +263,23 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
-      UpdDelay="0"
+      CmdIcon=$6
+      UpdDelay="30"
      ;;
      'MANUAL')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
-      UpdDelay=$6
+      UpdDelay="30"
      ;;
      'IGATE')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
-      UpdDelay=$6
+      CmdIcon=$6
+      UpdDelay="30"
      ;;
      *)
       CmdError
@@ -214,18 +288,52 @@ LoadCommands()
    ;;
    7)
     AppMode=$1
-    if [ "$7" = "DEBUG" ]
-    then
-     AppDebug="OK"
-    else
-     AppDebug="NO"
-    fi
     case $1 in
      'BEACON')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
+      CmdIcon=$6
+      UpdDelay="30"
+     ;;
+     'MANUAL')
+      CmdCall=$2
+      CmdLat=$3
+      CmdLong=$4
+      CmdText=$5
+      CmdIcon=$6
+      UpdDelay=$7
+     ;;
+     'IGATE')
+      CmdCall=$2
+      CmdLat=$3
+      CmdLong=$4
+      CmdText=$5
+      CmdIcon=$6
+      UpdDelay=$7
+     ;;
+     *)
+      CmdError
+     ;;
+    esac
+   ;;
+   8)
+    AppMode=$1
+    if [ "$8" = "DEBUG" ]
+    then
+     AppDebug="OK"
+    else
+     AppDebug="NO"
+    fi
+    AppDebug="OK"
+    case $1 in
+     'BEACON')
+      CmdCall=$2
+      CmdLat=$3
+      CmdLong=$4
+      CmdText=$5
+      CmdIcon=$6
       UpdDelay="0"
      ;;
      'MANUAL')
@@ -233,14 +341,16 @@ LoadCommands()
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
-      UpdDelay=$6
+      CmdIcon=$6
+      UpdDelay=$7
      ;;
      'IGATE')
       CmdCall=$2
       CmdLat=$3
       CmdLong=$4
       CmdText=$5
-      UpdDelay=$6
+      CmdIcon=$6
+      UpdDelay=$7
      ;;
      *)
       CmdError
@@ -253,9 +363,15 @@ LoadCommands()
   esac
  else
   AppMode="BEACON"
+  CmdCall=$MyCall
+  CmdLat=$MyLat
+  CmdLong=$MyLong
+  CmdText=$MyText
+  CmdIcon=$MyIcon
  fi
 }
 #
+
 # Show Info
 ShowInfo()
 {
@@ -268,10 +384,12 @@ ShowInfo()
   echo " MyLat: $MyLat"
   echo " MyLog: $MyLong"
   echo " MyText: $MyText"
+  echo " MyIcon: $MyIcon"
   echo " CmdCall: $CmdCall"
   echo " CmdLat: $CmdLat"
   echo " CmdLog: $CmdLong"
   echo " CmdText: $CmdText"
+  echo " CmdIcon: $CmdIcon"
  else
   case $AppMode in
    'BEACON')
@@ -279,18 +397,14 @@ ShowInfo()
     echo " MyLat: $MyLat"
     echo " MyLog: $MyLong"
     echo " MyText: $MyText"
+    echo " MyIcon: $MyIcon"
    ;;
    'MANUAL')
     echo " MyCall: $CmdCall"
     echo " MyLat: $CmdLat"
     echo " MyLog: $CmdLong"
     echo " MyText: $CmdText"
-   ;;
-   'IGATE')
-    #echo " MyCall: $CmdCall"
-    #echo " MyLat: $CmdLat"
-    #echo " MyLog: $CmdLong"
-    #echo " MyText: $CmdText"
+    echo " MyIcon: $CmdIcon"
    ;;
   esac
  fi
@@ -309,101 +423,164 @@ ShowInfo()
   'BEACON')
    # Para Futuros Usos
   ;;
-  'MANUAL')
-   # Para Futuros Usos
+  'GPS')
+   echo " GPS Config:"
+   echo "  Port: $SerialPort"
+   echo "  Speed: $SerialSpeed"
   ;;
   'IGATE')
    echo " Modem Config:"
    echo "  Port: $SerialPort"
    echo "  Speed: $SerialSpeed"
   ;;
+  'MANUAL')
+   # Para Futuros Usos
+  ;;
  esac
  echo "----------------------------------------" 
 }
 #
+
 # APRS NetClient
 NetClient()
 {
- # Connect
- while true
- do
-  # Detecta el Modo
-  case $AppMode in
-   'BEACON')
-    if [ ! "$CmdCall" ]
-    then
-    {
-     # Envia Datos de CFG a Servidor APRS
-     TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$MyCall>APRS,TCPIP*:=$MyLat/$MyLong&$MyText {APRSBC}" | nc $ServerHost $ServerPort 2> /dev/null`
-    }
-    else
-    {
-     # Envia Datos de CMD a Servidor APRS
-     TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong#$CmdText {APRSBC}" | nc $ServerHost $ServerPort 2> /dev/null`
-    }
-    fi
-   ;;
-   'MANUAL') # Envia Datos de CMD a Servidor APRS
-    TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong#$CmdText {APRSBC}" | nc $ServerHost $ServerPort 2> /dev/null`
-   ;;
-   'IGATE') # Envia Datos de Modem a Servidor APRS
-    TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$SerialCall>APRS,TCPIP*:=$SerialLat/$SerialLong#$SerialText {APRSBC}" | nc $ServerHost $ServerPort 2> /dev/null`
-   ;;
-  esac
+ # Detecta el Modo
+ case $AppMode in
+  'BEACON')
+   if [ ! "$CmdCall" ]
+   then
+   {
+    # Envia Datos de CFG a Servidor APRS
+    TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$MyCall>APRS,TCPIP*:=$MyLat/$MyLong$MyIcon$MyText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+   }
+   else
+   {
+    # Envia Datos de CMD a Servidor APRS
+    TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong$CmdIcon$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+   }
+   fi
+  ;;
+  'GPS') # Envia Datos de GPS a Servidor APRS
+   TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong$CmdIcon$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+  ;;
+  'IGATE') # Envia Datos de Modem a Servidor APRS
+   TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$SerialCall>APRS,TCPIP*:=$SerialLat/$SerialLong$CmdIcon$SerialText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+  ;;
+  'MANUAL') # Envia Datos de CMD a Servidor APRS
+   TmpData=`printf "%s\n" "user $MyCall pass $MyPass vers APRSB $AppVer" "$CmdCall>APRS,TCPIP*:=$CmdLat/$CmdLong$CmdIcon$CmdText {APRSBC}" | nc $ServerHost $ServerPort -N 2> /dev/null`
+  ;;
+ esac
+ if [ "$AppDebug" = "OK" ]
+ then
+  echo " TmpData: $TmpData"
+ fi
+ UpdState=`echo $TmpData | grep -c "# logresp $MyCall verified"`
+ if [ "$UpdState" = "0" ]
+ then
+  echo "Connecting to APRS Server [Error]"
   if [ "$AppDebug" = "OK" ]
   then
-   echo " TmpData: $TmpData"
+   echo " UpdState: $UpdState"
   fi
-  UpdState=`echo $TmpData | grep -c "# logresp $MyCall verified"`
-  if [ "$UpdState" = "0" ]
+ else
+  ServerName=`echo $TmpData | grep logresp | awk -F',' '{print $2}' | awk '{print $2}' | awk -F'\r' '{print $1}'`
+  echo "Connecting to APRS Server ($ServerName) [OK]"
+  if [ "$AppDebug" = "OK" ]
   then
-   echo "Connecting to APRS Server [Error]"
-   if [ "$AppDebug" = "OK" ]
-   then
-    echo " UpdState: $UpdState"
-   fi
-  else
-   ServerName=`echo $TmpData | grep logresp | awk -F',' '{print $2}' | awk '{print $2}' | awk -F'\r' '{print $1}'`
-   echo "Connecting to APRS Server ($ServerName) [OK]"
-   if [ "$AppDebug" = "OK" ]
-   then
-    ServerApp=`echo $TmpData | awk -F'#' '{print $2}' | awk '{print $1}' | awk -F'logresp' '{print $1}' | head -n 1`
-    ServerVer=`echo $TmpData | awk -F'#' '{print $2}' | awk '{print $2}' | awk -F"$MyCall" '{print $1}' | head -n 1`
-    echo " UpdState: $UpdState"
-    echo " ServerName: $ServerName"
-    echo " ServerApp: $ServerApp"
-    echo " ServerVer: $ServerVer"
-   fi
+   ServerApp=`echo $TmpData | awk -F'#' '{print $2}' | awk '{print $1}' | awk -F'logresp' '{print $1}' | head -n 1`
+   ServerVer=`echo $TmpData | awk -F'#' '{print $2}' | awk '{print $2}' | awk -F"$MyCall" '{print $1}' | head -n 1`
+   echo " UpdState: $UpdState"
+   echo " ServerName: $ServerName"
+   echo " ServerApp: $ServerApp"
+   echo " ServerVer: $ServerVer"
   fi
-  # Detecta el Modo
-  case $AppMode in
-   'BEACON') # Activa el UpdDelay
-    if [ ! "$CmdCall" ]
-    then
-    {
-     echo "Waiting $UpdDelay Seconds"
-     sleep $UpdDelay
-    }
-    else
-    {
-     sleep 1
-     break
-    }
-    fi
-   ;;
-   'MANUAL') # Activa el UpdDelay
-    echo "Waiting $UpdDelay Seconds"
-    sleep $UpdDelay
-   ;;
-   'IGATE') # Sale del Bucle
-    sleep 1
-    break
-   ;;
-  esac
- done
- #
+ fi
 }
 #
+
+# GPSRead
+GPSRead()
+{
+ SerialState=`ls /dev/* | grep -c "$SerialPort"`
+ if [ "$AppDebug" = "OK" ]
+ then
+  echo "SerialState: $SerialState"
+ fi
+ echo -n "Search Modem Serial Port ($SerialPort)"
+ if [ "$SerialState" = "1" ]
+ then
+  echo " [OK]"
+   echo -n 'Reading Data from GPS'
+   while read -r SerialData < $SerialPort
+   do
+    if [ "$AppDebug" = "OK" ]
+    then
+     echo "Data Read"
+     echo " $SerialData"
+    fi
+    if [ -n "$SerialData" ]
+    then
+     GPSCheck1=`echo $SerialData | grep -c '\$GPRMC'`
+     GPSCheck2=`echo $SerialData | grep -c '\$GPGGA'`
+     if [ "$GPSCheck1" = "1" ] || [ "$GPSCheck2" = "1" ]
+     then
+      if [ "$GPSCheck1" = "1" ]
+      then
+       GPSLatPoint=`echo $SerialData | awk -F',' '{print $5}'`
+       GPSLongPoint=`echo $SerialData | awk -F',' '{print $7}'`
+       GPSLatTemp=`echo $SerialData | awk -F',' '{print $4}'`
+       GPSLongTemp=`echo $SerialData | awk -F',' '{print $6}'`
+      fi
+      if [ "$GPSCheck2" = "1" ]
+      then
+       GPSLatPoint=`echo $SerialData | awk -F',' '{print $4}'`
+       GPSLongPoint=`echo $SerialData | awk -F',' '{print $6}'`
+       GPSLatTemp=`echo $SerialData | awk -F',' '{print $3}'`
+       GPSLongTemp=`echo $SerialData | awk -F',' '{print $5}'`
+      fi
+      GPSLatEnd=`echo $GPSLatTemp | awk -F'.' '{print $2}'`
+      GPSLongEnd=`echo $GPSLongTemp | awk -F'.' '{print $2}'`
+      GPSLatCount=${#GPSLatEnd}
+      GPSLongCount=${#GPSLongEnd}
+      if [ $GPSLatCount -ge 2 ]
+      then
+       GPSLatCut=$((GPSLatCount-1))
+       GPSLatTemp=`echo $GPSLatTemp | rev | cut -c$GPSLatCut- | rev`
+      fi
+      if [ $GPSLongCount -ge 2 ]
+      then
+       GPSLongCut=$((GPSLongCount-1))
+       GPSLongTemp=`echo $GPSLongTemp | rev | cut -c$GPSLongCut- | rev`
+      fi
+      CmdLat=`echo $GPSLatTemp$GPSLatPoint`
+      CmdLong=`echo $GPSLongTemp$GPSLongPoint`
+     fi
+    fi
+    if [ -n "$CmdLat" ] && [ -n "$CmdLong" ]
+    then
+     echo " [OK]"
+     FechaActual=`date +"%d/%m/%Y %H:%M:%S"`
+     echo "Sending Data to Server {$FechaActual}"
+     break
+    else
+     ErrorCount=$((ErrorCount+1))
+    fi
+    if [ $ErrorCount -ge 15 ]
+    then
+     echo " [NO]"
+     break
+    fi
+   done
+ else
+  echo " [NO]"
+  if [ "$AppDebug" = "OK" ]
+  then
+   echo "SerialState: $SerialState"
+  fi
+ fi
+}
+#
+
 # ModemRead
 ModemRead()
 {
@@ -422,14 +599,11 @@ ModemRead()
   if [ -z "$SerialStart" ]
   then
    echo " [OK]"
-   while true
+   echo -n 'Reading Data from Serial Modem'
+   while read -r SerialData < $SerialPort
    do
-    echo -n 'Reading Data from Serial Modem'
-    SerialData=`head -n 1 $SerialPort` # Lectura con Head
-    #SerialData=`dd if=$SerialPort count=22 status=none` # Lectura con DD
     if [ -n "$SerialData" ]
     then
-     echo " [OK]"
      if [ "$AppDebug" = "OK" ]
      then
       echo "Data Read"
@@ -441,12 +615,6 @@ ModemRead()
      SerialLat="$CmdLat"
      SerialLong="$CmdLong"
      SerialText="$SerialData"
-     echo " MyCall: $SerialCall"
-     echo " MyLat: $SerialLat"
-     echo " MyLog: $SerialLong"
-     echo " MyText: $SerialText"
-     echo "Sending Data"
-     NetClient
     else
      echo " [Error]"
     fi
@@ -467,20 +635,43 @@ ModemRead()
  fi
 }
 #
+
 # AppStart
 About
 LoadConfig
 LoadCommands $@
 ShowInfo
-case $AppMode in
- 'BEACON')
-  NetClient
- ;;
- 'MANUAL')
-  NetClient
- ;;
- 'IGATE')
-  ModemRead
- ;;
-esac
+while true
+do
+ case $AppMode in
+  'BEACON')
+   NetClient
+  ;;
+  'GPS')
+    GPSRead
+    if [ -n "$CmdLat" ] && [ -n "$CmdLong" ]
+    then
+      NetClient
+    fi
+  ;;
+  'IGATE')
+    ModemRead
+    if [ -n "$CmdLat" ] && [ -n "$CmdLong" ]
+    then
+     NetClient
+    fi
+  ;;
+  'MANUAL')
+   NetClient
+  ;;
+ esac
+ if [ $UpdDelay -gt 0 ]
+ then
+  echo "Waiting $UpdDelay Seconds"
+  sleep $UpdDelay
+ else
+  sleep 1
+  break
+ fi
+done
 #
