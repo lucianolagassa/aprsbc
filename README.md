@@ -18,10 +18,11 @@ Instalación:
 curl -L https://github.com/lucianolagassa/aprsbc/raw/master/Setup.sh | bash
 
 
+
 Luciano Lagassa <info@lucianolagassa.com.ar>
 
 https://www.lucianolagassa.com.ar/
 
-Copyright 2018 Luciano Lagassa and Contributors
+Copyright 2023 Luciano Lagassa and Contributors
 
 `Automatic Packet Reporting System (APRS) <http://www.aprs.org/>` is Copyright Bob Bruninga WB4APR wb4apr@amsat.org
