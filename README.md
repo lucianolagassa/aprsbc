@@ -13,6 +13,10 @@ Se dispone de 4 modos:
  - **IGATE**:  *modo serial, con o sin datos desde linea de comandos, por lo que puede lee los datos desde el archivo aprsbc.conf, desde linea de comandos y toma los datos desde modem tnc, actualización infinita.*
  - **MANUAL**: *modo manual, toma los datos desde linea de comandos y solo lee los datos de login desde el archivo aprsbc.conf, actualización infinita.*
 
+Instalación:
+
+curl -L https://github.com/lucianolagassa/aprsbc/raw/master/Setup.sh | bash
+
 
 Luciano Lagassa <info@lucianolagassa.com.ar>
 
