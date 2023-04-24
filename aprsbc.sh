@@ -3,7 +3,7 @@
 # LU3FLA - Luciano Javier Lagassa - info@lucianolagassa.com.ar - www.lucianolagassa.com.ar
 #
 # AppVersion
-AppVer="0.23.04.13-23.47"
+AppVer="0.23.04.24-19.00"
 #
 
 # About
@@ -534,40 +534,29 @@ GPSRead()
     if [ -n "$SerialData" ]
     then
      GPSCheck1=`echo $SerialData | grep -c '\$GPRMC'`
-     GPSCheck2=`echo $SerialData | grep -c '\$GPGGA'`
-     if [ "$GPSCheck1" = "1" ] || [ "$GPSCheck2" = "1" ]
+     if [ "$GPSCheck1" = "1" ]
      then
-      if [ "$GPSCheck1" = "1" ]
-      then
-       GPSLatPoint=`echo $SerialData | awk -F',' '{print $5}'`
-       GPSLongPoint=`echo $SerialData | awk -F',' '{print $7}'`
-       GPSLatTemp=`echo $SerialData | awk -F',' '{print $4}'`
-       GPSLongTemp=`echo $SerialData | awk -F',' '{print $6}'`
-      fi
-      if [ "$GPSCheck2" = "1" ]
-      then
-       GPSLatPoint=`echo $SerialData | awk -F',' '{print $4}'`
-       GPSLongPoint=`echo $SerialData | awk -F',' '{print $6}'`
-       GPSLatTemp=`echo $SerialData | awk -F',' '{print $3}'`
-       GPSLongTemp=`echo $SerialData | awk -F',' '{print $5}'`
-      fi
-      GPSLatEnd=`echo $GPSLatTemp | awk -F'.' '{print $2}'`
-      GPSLongEnd=`echo $GPSLongTemp | awk -F'.' '{print $2}'`
-      GPSLatCount=${#GPSLatEnd}
-      GPSLongCount=${#GPSLongEnd}
-      if [ $GPSLatCount -ge 2 ]
-      then
-       GPSLatCut=$((GPSLatCount-1))
-       GPSLatTemp=`echo $GPSLatTemp | rev | cut -c$GPSLatCut- | rev`
-      fi
-      if [ $GPSLongCount -ge 2 ]
-      then
-       GPSLongCut=$((GPSLongCount-1))
-       GPSLongTemp=`echo $GPSLongTemp | rev | cut -c$GPSLongCut- | rev`
-      fi
-      CmdLat=`echo $GPSLatTemp$GPSLatPoint`
-      CmdLong=`echo $GPSLongTemp$GPSLongPoint`
+      GPSLatPoint=`echo $SerialData | awk -F',' '{print $5}'`
+      GPSLongPoint=`echo $SerialData | awk -F',' '{print $7}'`
+      GPSLatTemp=`echo $SerialData | awk -F',' '{print $4}'`
+      GPSLongTemp=`echo $SerialData | awk -F',' '{print $6}'`
      fi
+     GPSLatEnd=`echo $GPSLatTemp | awk -F'.' '{print $2}'`
+     GPSLongEnd=`echo $GPSLongTemp | awk -F'.' '{print $2}'`
+     GPSLatCount=${#GPSLatEnd}
+     GPSLongCount=${#GPSLongEnd}
+     if [ $GPSLatCount -ge 2 ]
+     then
+      GPSLatCut=$((GPSLatCount-1))
+      GPSLatTemp=`echo $GPSLatTemp | rev | cut -c$GPSLatCut- | rev`
+     fi
+     if [ $GPSLongCount -ge 2 ]
+     then
+      GPSLongCut=$((GPSLongCount-1))
+      GPSLongTemp=`echo $GPSLongTemp | rev | cut -c$GPSLongCut- | rev`
+     fi
+     CmdLat=`echo $GPSLatTemp$GPSLatPoint`
+     CmdLong=`echo $GPSLongTemp$GPSLongPoint`
     fi
     if [ -n "$CmdLat" ] && [ -n "$CmdLong" ]
     then
